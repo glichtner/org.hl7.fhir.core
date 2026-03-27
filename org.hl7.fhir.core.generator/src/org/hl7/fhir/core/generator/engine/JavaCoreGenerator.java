@@ -48,20 +48,22 @@ public class JavaCoreGenerator {
   
   public static void main(String[] args) throws Exception {
     System.out.println("HAPI CORE Code Generator");
-    if (args.length != 3) {
-      System.out.println("Usage: invoke with 3 command line parameters to generate HAPI R5 code");
+    if (args.length < 3) {
+      System.out.println("Usage: invoke with 3+ command line parameters to generate HAPI code");
       System.out.println("1: fhir version to generate from (e.g. 4.2.0 or 'current'");
       System.out.println("2: project directory to read java-adorment from - e.g. C:\\work\\org.hl7.fhir\\org.hl7.fhir.core\\org.hl7.fhir.r5");
       System.out.println("3: project directory to generate code into - e.g. C:\\work\\org.hl7.fhir\\org.hl7.fhir.core\\org.hl7.fhir.r5.new");
+      System.out.println("4: (optional) --skip-extensions to skip extension code generation");
     } else {
       String version = args[0];
       String src = args[1];
       String dest = args[2];
-      new JavaCoreGenerator().generate(version, src, dest);
+      boolean skipExtensions = args.length > 3 && "--skip-extensions".equals(args[3]);
+      new JavaCoreGenerator().generate(version, src, dest, skipExtensions);
     }
   }
 
-  private void generate(String version, String src, String dest) throws Exception {
+  private void generate(String version, String src, String dest, boolean skipExtensions) throws Exception {
     long start = System.currentTimeMillis();
     Map<String, AnalysisElementInfo> elementInfo = new HashMap<>();
     Set<String> genClassList = new HashSet<>();
@@ -181,18 +183,22 @@ public class JavaCoreGenerator {
     System.out.println(" .. RdfParser");
     rgen.generate();
     rgen.close();
-    Map<String, StructureDefinition> extensions = new HashMap<>();
-    for (StructureDefinition sd : master.getStructures().getList()) {
-      if (ProfileUtilities.isExtensionDefinition(sd)) {
-        sd.setUserData("source", "core");
-        extensions.put(sd.getUrl(), sd);
+    if (!skipExtensions) {
+      Map<String, StructureDefinition> extensions = new HashMap<>();
+      for (StructureDefinition sd : master.getStructures().getList()) {
+        if (ProfileUtilities.isExtensionDefinition(sd)) {
+          sd.setUserData("source", "core");
+          extensions.put(sd.getUrl(), sd);
+        }
       }
+      tryLoadPackageForExtensions(pcm, master, extensions, "hl7.fhir.uv.extensions", "");
+      tryLoadPackageForExtensions(pcm, master, extensions, "hl7.terminology.r5", "tx");
+      tryLoadPackageForExtensions(pcm, master, extensions, "hl7.fhir.uv.tools#current", "tools");
+      JavaExtensionsGenerator exgen = new JavaExtensionsGenerator(Utilities.path(dest, "src", "main", "java", "org", "hl7", "fhir", jid, "extensions"), master, config, date, npm.version(), jid, elementInfo, genClassList);
+      exgen.generate(extensions);
+    } else {
+      System.out.println("Skipping extension code generation");
     }
-    tryLoadPackageForExtensions(pcm, master, extensions, "hl7.fhir.uv.extensions", "");
-    tryLoadPackageForExtensions(pcm, master, extensions, "hl7.terminology.r5", "tx");
-    tryLoadPackageForExtensions(pcm, master, extensions, "hl7.fhir.uv.tools#current", "tools");
-    JavaExtensionsGenerator exgen = new JavaExtensionsGenerator(Utilities.path(dest, "src", "main", "java", "org", "hl7", "fhir", jid, "extensions"), master, config, date, npm.version(), jid, elementInfo, genClassList);
-    exgen.generate(extensions);
     System.out.println("Done ("+Long.toString(System.currentTimeMillis()-start)+"ms)");   
     
   }
