@@ -18,7 +18,7 @@ import org.hl7.fhir.r5.model.StructureDefinition;
 import org.hl7.fhir.r5.model.StructureDefinition.StructureDefinitionKind;
 import org.hl7.fhir.r5.model.ValueSet;
 import org.hl7.fhir.r5.model.ValueSet.ConceptSetComponent;
-import org.hl7.fhir.r5.utils.ToolingExtensions;
+import org.hl7.fhir.r5.extensions.ExtensionDefinitions;
 import org.hl7.fhir.utilities.Utilities;
 import org.hl7.fhir.utilities.VersionUtilities;
 
@@ -254,8 +254,8 @@ public class Analyser {
   }
 
   protected String getTypename(TypeRefComponent type) throws Exception {
-    if (type.hasExtension(ToolingExtensions.EXT_FHIR_TYPE)) {
-      return type.getExtensionString(ToolingExtensions.EXT_FHIR_TYPE);
+    if (type.hasExtension(ExtensionDefinitions.EXT_FHIR_TYPE)) {
+      return type.getExtensionString(ExtensionDefinitions.EXT_FHIR_TYPE);
     } else {
       return getTypeName(type.getCode());
     }

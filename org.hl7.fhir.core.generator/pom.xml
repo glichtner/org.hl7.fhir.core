@@ -4,7 +4,7 @@
 
     <groupId>ca.uhn.hapi.fhir</groupId>
     <artifactId>org.hl7.fhir.core.generator</artifactId>
-    <version>6.9.4-SNAPSHOT</version>
+    <version>6.9.5-SNAPSHOT</version>
     <packaging>jar</packaging>
 
     <name>HL7 FHIR Core Code Generator</name>
@@ -12,7 +12,7 @@
 
     <properties>
         <maven.compiler.release>17</maven.compiler.release>
-        <core.version>6.9.4-SNAPSHOT</core.version>
+        <core.version>6.9.5-SNAPSHOT</core.version>
         <hapi_fhir_version>8.4.0</hapi_fhir_version>
     </properties>
 
@@ -42,11 +42,35 @@
             <artifactId>hapi-fhir-base</artifactId>
             <version>${hapi_fhir_version}</version>
         </dependency>
+        <!-- Transitive deps marked optional in r5/utilities modules -->
+        <dependency>
+            <groupId>com.google.code.gson</groupId>
+            <artifactId>gson</artifactId>
+            <version>2.13.1</version>
+        </dependency>
+        <dependency>
+            <groupId>org.ogce</groupId>
+            <artifactId>xpp3</artifactId>
+            <version>1.1.6</version>
+        </dependency>
+        <dependency>
+            <groupId>org.apache.commons</groupId>
+            <artifactId>commons-compress</artifactId>
+            <version>1.27.1</version>
+        </dependency>
     </dependencies>
 
     <build>
         <sourceDirectory>src</sourceDirectory>
         <plugins>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-compiler-plugin</artifactId>
+                <version>3.13.0</version>
+                <configuration>
+                    <release>17</release>
+                </configuration>
+            </plugin>
             <plugin>
                 <groupId>org.codehaus.mojo</groupId>
                 <artifactId>exec-maven-plugin</artifactId>

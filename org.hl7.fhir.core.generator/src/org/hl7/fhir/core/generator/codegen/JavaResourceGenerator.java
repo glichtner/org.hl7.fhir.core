@@ -1681,6 +1681,9 @@ private void generatePropertyMaker(Analysis analysis, TypeInfo ti, String indent
   }
 
   private String replaceTitle(String rn, String cnt) {
+    if (cnt == null) {
+      return "";
+    }
     String[] title = Utilities.splitByCamelCase(rn);
     CommaSeparatedStringBuilder b = new CommaSeparatedStringBuilder(" ");
     for (String s : title) {

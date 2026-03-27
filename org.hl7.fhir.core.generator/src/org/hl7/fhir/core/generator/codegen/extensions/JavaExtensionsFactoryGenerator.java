@@ -171,7 +171,7 @@ public class JavaExtensionsFactoryGenerator extends JavaBaseGenerator {
           if (genClassList.contains(info.getJavaType()) ) {
             contexts.add(info.getJavaType());
           } else {
-            contexts.add("org.hl7.fhir.r5.model."+info.getClassFile()+"."+info.getJavaType());
+            contexts.add("org.hl7.fhir."+jid+".model."+info.getClassFile()+"."+info.getJavaType());
           }
         }
         // contexts.add(c.getExpression());

@@ -1,7 +1,7 @@
 package org.hl7.fhir.{{jid}}.extensions;
 
 import org.hl7.fhir.exceptions.FHIRException;
-import org.hl7.fhir.r5.model.*;
+import org.hl7.fhir.{{jid}}.model.*;
 import java.util.List;
 import java.math.BigDecimal;
 
