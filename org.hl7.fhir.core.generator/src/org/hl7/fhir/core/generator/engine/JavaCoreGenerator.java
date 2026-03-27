@@ -69,8 +69,22 @@ public class JavaCoreGenerator {
     String ap = Utilities.path(src);
     System.out.println("Load Configuration from "+ap);
     Configuration config = new Configuration(ap);
-    String pid = VersionUtilities.isR4BVer(version) ? "r4b" : "r5";
-    String jid = VersionUtilities.isR4BVer(version) ? "r4b" : "r5";
+    String pid;
+    if (VersionUtilities.isR4BVer(version)) {
+      pid = "r4b";
+    } else if (VersionUtilities.isR6Ver(version)) {
+      pid = "r6";
+    } else {
+      pid = "r5";
+    }
+    String jid;
+    if (VersionUtilities.isR4BVer(version)) {
+      jid = "r4b";
+    } else if (VersionUtilities.isR6Ver(version)) {
+      jid = "r6";
+    } else {
+      jid = "r5";
+    }
     Date ddate = new Date();
     String date = config.DATE_FORMAT().format(ddate);
     
@@ -83,8 +97,14 @@ public class JavaCoreGenerator {
     markValueSets(master, config);
     
     System.out.println("Load hl7.fhir."+pid+".expansions");
-    Definitions expansions = DefinitionsLoaderR5.load(pcm.loadPackage("hl7.fhir."+pid+".expansions", version));
-    
+    Definitions expansions;
+    try {
+      expansions = DefinitionsLoaderR5.load(pcm.loadPackage("hl7.fhir."+pid+".expansions", version));
+    } catch (Exception e) {
+      System.out.println("Warning: expansions package not available ("+e.getMessage()+"), proceeding without");
+      expansions = new Definitions();
+    }
+
     System.out.println("Process Expansions");
     updateExpansions(master, expansions);
     
@@ -168,13 +188,22 @@ public class JavaCoreGenerator {
         extensions.put(sd.getUrl(), sd);
       }
     }
-    loadPackageforExtensions(pcm, master, extensions, "hl7.fhir.uv.extensions", "");
-    loadPackageforExtensions(pcm, master, extensions, "hl7.terminology.r5", "tx");
-    loadPackageforExtensions(pcm, master, extensions, "hl7.fhir.uv.tools#current", "tools");
+    tryLoadPackageForExtensions(pcm, master, extensions, "hl7.fhir.uv.extensions", "");
+    tryLoadPackageForExtensions(pcm, master, extensions, "hl7.terminology.r5", "tx");
+    tryLoadPackageForExtensions(pcm, master, extensions, "hl7.fhir.uv.tools#current", "tools");
     JavaExtensionsGenerator exgen = new JavaExtensionsGenerator(Utilities.path(dest, "src", "main", "java", "org", "hl7", "fhir", jid, "extensions"), master, config, date, npm.version(), jid, elementInfo, genClassList);
     exgen.generate(extensions);
     System.out.println("Done ("+Long.toString(System.currentTimeMillis()-start)+"ms)");   
     
+  }
+
+  private void tryLoadPackageForExtensions(FilesystemPackageCacheManager pcm, Definitions master,
+      Map<String, StructureDefinition> extensions, String id, String source) {
+    try {
+      loadPackageforExtensions(pcm, master, extensions, id, source);
+    } catch (Exception e) {
+      System.out.println("Warning: could not load extension package "+id+": "+e.getMessage());
+    }
   }
 
   private void loadPackageforExtensions(FilesystemPackageCacheManager pcm, Definitions master,
