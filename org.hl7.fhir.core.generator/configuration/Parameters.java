@@ -3,9 +3,20 @@ public Parameters addParameter(String name, boolean b) {
   return this;
 }
 
+public Parameters addParameter(String name, int i) {
+  addParameter().setName(name).setValue(new IntegerType(i));
+  return this;
+}
+
 public Parameters addParameter(String name, String s) {
   if (s != null)
     addParameter().setName(name).setValue(new StringType(s));
+  return this;
+}
+
+public Parameters addCodeParameter(String name, String s) {
+  if (s != null)
+    addParameter().setName(name).setValue(new CodeType(s));
   return this;
 }
 
@@ -13,6 +24,22 @@ public Parameters addParameter(String name, DataType v) {
   if (v != null)
     addParameter().setName(name).setValue(v);
   return this;
+}
+
+public boolean hasParameterValue(String name, String value) {
+  for (ParametersParameterComponent p : getParameter()) {
+    if (p.getName().equals(name) && p.hasValue() && value.equals(p.getValue().primitiveValue()))
+      return true;
+  }
+  return false;
+}
+
+public void addParameters(Parameters expParameters) {
+  for (ParametersParameterComponent p : expParameters.getParameter()) {
+    if (!hasParameter(p.getName())) {
+      addParameter(p);
+    }
+  }
 }
 
 public Parameters setParameter(String name, boolean b) {

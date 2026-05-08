@@ -572,17 +572,19 @@ public class JavaResourceGenerator extends JavaBaseGenerator {
     }
     
     /*
-     * Client parameter ([name])
+     * Client parameter ([name]) - skip "resource" type as ResourceClientParam is not in hapi-fhir-base
      */
-    write(" /**\r\n"); 
-    write("   * <b>Fluent Client</b> search parameter constant for <b>" + code + "</b>\r\n"); 
-    write("   * <p>\r\n");
-    write("   * Description: <b>" + sp.getDescription() + "</b><br>\r\n"); 
-    write("   * Type: <b>"+ sp.getType().toCode() + "</b><br>\r\n");
-    write("   * Path: <b>" + sp.getExpression() + "</b><br>\r\n"); 
-    write("   * </p>\r\n");
-    write("   */\r\n");
-    write("  public static final ca.uhn.fhir.rest.gclient." + upFirst(sp.getType().toCode()) + "ClientParam" + genericTypes + " " + constName + " = new ca.uhn.fhir.rest.gclient." + upFirst(sp.getType().toCode()) + "ClientParam" + genericTypes + "(SP_" + constName + ");\r\n\r\n"); 
+    if (!"resource".equals(sp.getType().toCode())) {
+      write(" /**\r\n");
+      write("   * <b>Fluent Client</b> search parameter constant for <b>" + code + "</b>\r\n");
+      write("   * <p>\r\n");
+      write("   * Description: <b>" + sp.getDescription() + "</b><br>\r\n");
+      write("   * Type: <b>"+ sp.getType().toCode() + "</b><br>\r\n");
+      write("   * Path: <b>" + sp.getExpression() + "</b><br>\r\n");
+      write("   * </p>\r\n");
+      write("   */\r\n");
+      write("  public static final ca.uhn.fhir.rest.gclient." + upFirst(sp.getType().toCode()) + "ClientParam" + genericTypes + " " + constName + " = new ca.uhn.fhir.rest.gclient." + upFirst(sp.getType().toCode()) + "ClientParam" + genericTypes + "(SP_" + constName + ");\r\n\r\n");
+    }
     
     if (sp.getType() == SearchParamType.REFERENCE && clss == JavaGenClass.Resource && !isAbstract) {
       String incName = upFirst(name) + ":" + code;

@@ -10,7 +10,11 @@
       return getName();
     return toString();
   }
-  
+
+  public String present(String lang) {
+    return present();
+  }
+
   public String getVUrl() {
     return getUrl() + (hasVersion() ? "|"+getVersion() : "");
   }      

@@ -42,7 +42,11 @@
    * @return  the logical ID part of this resource's id 
    * @see IdType#getIdPart() 
    */ 
-  public String getIdPart() { 
-    return getIdElement().getIdPart(); 
-  } 
+  public String getIdPart() {
+    return getIdElement().getIdPart();
+  }
+
+  public org.hl7.fhir.utilities.FhirPublication getFHIRPublicationVersion() {
+    return org.hl7.fhir.utilities.FhirPublication.fromCode(Constants.VERSION_BASE);
+  }
  

@@ -41,6 +41,15 @@
        return retVal.get(0);
      }
    }
+
+   public Extension getExtensionByUrl(String... theUrls) {
+     for (Extension next : getExtension()) {
+       if (org.hl7.fhir.utilities.Utilities.existsInList(next.getUrl(), theUrls)) {
+         return next;
+       }
+     }
+     return null;
+   }
   
    /**
     * Remove any extensions that match (by given URL).
@@ -95,6 +104,16 @@
      }
      return java.util.Collections.unmodifiableList(retVal);
    }
+
+   public List<Extension> getExtensionsByUrl(String... theUrls) {
+     ArrayList<Extension> retVal = new ArrayList<Extension>();
+     for (Extension next : getExtension()) {
+       if (org.hl7.fhir.utilities.Utilities.existsInList(next.getUrl(), theUrls)) {
+         retVal.add(next);
+       }
+     }
+     return java.util.Collections.unmodifiableList(retVal);
+   }
    
    /**
     * Returns an true if this element has an extension that matchs the given URL.
@@ -104,7 +123,25 @@
     * @param theUrl The URL. Must not be blank or null.
     */
    public boolean hasExtension(String theUrl) {
-     return !getExtensionsByUrl(theUrl).isEmpty(); 
+     return !getExtensionsByUrl(theUrl).isEmpty();
+   }
+
+   public boolean hasExtension(String... theUrls) {
+     for (Extension next : getExtension()) {
+       if (org.hl7.fhir.utilities.Utilities.existsInList(next.getUrl(), theUrls)) {
+         return true;
+       }
+     }
+     return false;
+   }
+
+   public Base getExtensionValue(String... theUrls) {
+     for (Extension next : getExtension()) {
+       if (org.hl7.fhir.utilities.Utilities.existsInList(next.getUrl(), theUrls)) {
+         return next.getValue();
+       }
+     }
+     return null;
    }
 
    /**
@@ -115,21 +152,36 @@
     * @param theUrl The URL. Must not be blank or null.
     */
    public String getExtensionString(String theUrl) throws FHIRException {
-     List<Extension> ext = getExtensionsByUrl(theUrl); 
-     if (ext.isEmpty()) 
-       return null; 
-     if (ext.size() > 1) 
+     List<Extension> ext = getExtensionsByUrl(theUrl);
+     if (ext.isEmpty())
+       return null;
+     if (ext.size() > 1)
        throw new FHIRException("Multiple matching extensions found for extension '"+theUrl+"'");
+     if (!ext.get(0).hasValue())
+       return null;
      if (!ext.get(0).getValue().isPrimitive())
        throw new FHIRException("Extension '"+theUrl+"' could not be converted to a string");
      return ext.get(0).getValue().primitiveValue();
    }
 
+   public String getExtensionString(String... theUrls) throws FHIRException {
+     for (String url : theUrls) {
+       if (hasExtension(url)) {
+         return getExtensionString(url);
+       }
+     }
+     return null;
+   }
+
 
   public StandardsStatus getStandardsStatus() {
-    return ToolingExtensions.getStandardsStatus(this);
+    return ExtensionUtilities.getStandardsStatus(this);
   }
-  
+
   public void setStandardsStatus(StandardsStatus status) {
-    ToolingExtensions.setStandardsStatus(this, status, null);
+    ExtensionUtilities.setStandardsStatus(this, status, null);
+  }
+
+  public org.hl7.fhir.utilities.FhirPublication getFHIRPublicationVersion() {
+    return org.hl7.fhir.utilities.FhirPublication.fromCode(Constants.VERSION_BASE);
   }

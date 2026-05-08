@@ -132,6 +132,14 @@
     return "0".equals(getMax()); 
   }   
 
-  public boolean isRequired() { 
-    return getMin() == 1; 
+  public boolean isRequired() {
+    return getMin() == 1;
+  }
+
+  public int getMaxAsInt() {
+    return "*".equals(getMax()) ? Integer.MAX_VALUE : Integer.parseInt(getMax());
+  }
+
+  public boolean repeats() {
+    return "*".equals(getMax()) || (getMax() != null && Integer.parseInt(getMax()) > 1);
   }

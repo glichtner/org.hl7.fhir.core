@@ -8,12 +8,12 @@ public boolean hasTarget() {
    * @return
    */
   public String getWorkingCode() {
-    if (hasExtension(ToolingExtensions.EXT_FHIR_TYPE))
-      return getExtensionString(ToolingExtensions.EXT_FHIR_TYPE);
-    if (!hasCodeElement()) 
+    if (hasExtension(ExtensionDefinitions.EXT_FHIR_TYPE))
+      return getExtensionString(ExtensionDefinitions.EXT_FHIR_TYPE);
+    if (!hasCodeElement())
       return null;
-    if (getCodeElement().hasExtension(ToolingExtensions.EXT_XML_TYPE)) {
-      String s = getCodeElement().getExtensionString(ToolingExtensions.EXT_XML_TYPE);
+    if (getCodeElement().hasExtension(ExtensionDefinitions.EXT_XML_TYPE)) {
+      String s = getCodeElement().getExtensionString(ExtensionDefinitions.EXT_XML_TYPE);
       if ("xsd:gYear OR xsd:gYearMonth OR xsd:date OR xsd:dateTime".equalsIgnoreCase(s))
         return "dateTime";
       if ("xsd:gYear OR xsd:gYearMonth OR xsd:date".equalsIgnoreCase(s))

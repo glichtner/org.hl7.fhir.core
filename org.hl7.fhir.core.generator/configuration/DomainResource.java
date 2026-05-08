@@ -21,7 +21,27 @@ public void checkNoModifiers(String noun, String verb) throws FHIRException {
         return true;
     return false;
     }
-    
+
+  public boolean hasExtension(String... theUrls) {
+    for (Extension e : getExtension())
+      if (org.hl7.fhir.utilities.Utilities.existsInList(e.getUrl(), theUrls))
+        return true;
+    return false;
+  }
+
+  public String getExtensionString(String... theUrls) throws FHIRException {
+    for (String url : theUrls) {
+      if (hasExtension(url)) {
+        for (Extension e : getExtension()) {
+          if (url.equals(e.getUrl()) && e.hasValue() && e.getValue().isPrimitive()) {
+            return e.getValue().primitiveValue();
+          }
+        }
+      }
+    }
+    return null;
+  }
+
        public Extension getExtensionByUrl(String theUrl) {
      org.apache.commons.lang3.Validate.notBlank(theUrl, "theUrl must not be blank or null");
      ArrayList<Extension> retVal = new ArrayList<Extension>();
@@ -66,6 +86,16 @@ public void checkNoModifiers(String noun, String verb) throws FHIRException {
       return Collections.unmodifiableList(retVal);
     }
 
+    public List<Extension> getExtensionsByUrl(String... theUrls) {
+      ArrayList<Extension> retVal = new ArrayList<Extension>();
+      for (Extension next : getExtension()) {
+        if (org.hl7.fhir.utilities.Utilities.existsInList(next.getUrl(), theUrls)) {
+          retVal.add(next);
+        }
+      }
+      return Collections.unmodifiableList(retVal);
+    }
+
     /**
      * Returns a list of modifier extensions from this element which have the given URL. Note that
      * this list may not be modified (you can not add or remove elements from it)
@@ -83,9 +113,9 @@ public void checkNoModifiers(String noun, String verb) throws FHIRException {
 
 
     public StandardsStatus getStandardsStatus() {
-      return ToolingExtensions.getStandardsStatus(this);
+      return ExtensionUtilities.getStandardsStatus(this);
     }
-    
+
     public void setStandardsStatus(StandardsStatus status) {
-      ToolingExtensions.setStandardsStatus(this, status, null);
+      ExtensionUtilities.setStandardsStatus(this, status, null);
     }
