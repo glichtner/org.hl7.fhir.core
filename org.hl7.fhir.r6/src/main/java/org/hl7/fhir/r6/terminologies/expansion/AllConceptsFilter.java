@@ -1,0 +1,20 @@
+package org.hl7.fhir.r6.terminologies.expansion;
+
+import java.util.List;
+
+import org.hl7.fhir.r6.model.CodeSystem;
+import org.hl7.fhir.r6.model.CodeSystem.ConceptDefinitionComponent;
+import org.hl7.fhir.utilities.MarkedToMoveToAdjunctPackage;
+
+@MarkedToMoveToAdjunctPackage
+public class AllConceptsFilter extends ConceptFilter {
+
+  public AllConceptsFilter(List<String> allErrors) {
+    super(allErrors);
+  }
+
+  @Override
+  public boolean includeConcept(CodeSystem cs, ConceptDefinitionComponent def) {
+    return true;
+  }
+}
