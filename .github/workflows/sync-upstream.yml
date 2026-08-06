@@ -1,6 +1,11 @@
-name: Sync with upstream (manual)
+name: Sync with upstream
 
 on:
+  # Weekly check: opens a sync PR when upstream has new commits.
+  # Merging the PR triggers release-r6.yml (new core jars + validator release),
+  # so merges are deliberate acts. No auto-merge.
+  schedule:
+    - cron: '0 5 * * 1'
   workflow_dispatch:
 
 permissions:
@@ -62,6 +67,10 @@ jobs:
             "- Behind by: ${{ steps.check.outputs.behind }} commits" \
             "- Our patches ahead: ${{ steps.check.outputs.ahead }} commits" \
             "- Merge status: **${STATUS}**" \
+            "" \
+            "Merging to master triggers release-r6.yml (new core jars + validator_cli release)." \
+            "If the core project version changed, update the \`<core_version>\` pin in" \
+            "glichtner/fhir-ig-publisher pom.xml afterwards and merge/release there too." \
             "")
           if [ "$STATUS" = "conflict" ] && [ -s /tmp/conflicts.txt ]; then
             BODY="$BODY
