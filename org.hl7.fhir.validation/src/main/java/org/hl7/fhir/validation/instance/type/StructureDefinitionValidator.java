@@ -16,7 +16,7 @@ import org.hl7.fhir.convertors.factory.VersionConvertorFactory_14_50;
 import org.hl7.fhir.convertors.factory.VersionConvertorFactory_30_50;
 import org.hl7.fhir.convertors.factory.VersionConvertorFactory_40_50;
 import org.hl7.fhir.exceptions.FHIRException;
-import org.hl7.fhir.r5.conformance.profile.CompliesWithChecker;
+import org.hl7.fhir.validation.instance.type.CompliesWithChecker;
 import org.hl7.fhir.r5.conformance.profile.ProfileUtilities;
 import org.hl7.fhir.r5.context.IWorkerContext;
 import org.hl7.fhir.r5.context.SimpleWorkerContext;
@@ -564,6 +564,8 @@ public class StructureDefinitionValidator extends BaseValidator {
       }
       try {
         String pp = (path.contains("#") ? path.substring(path.indexOf("#") + 1) : path);
+        @SuppressWarnings("checkstyle:stringImplicitPatternUsage")
+        //single literal character split
         String[] p = pp.split("\\.");
         String url = path.contains("#") ? path.substring(0, path.indexOf("#")) : "http://hl7.org/fhir/StructureDefinition/" + p[0];
 
@@ -572,13 +574,19 @@ public class StructureDefinitionValidator extends BaseValidator {
           // this is a hack for the fact that CanonicalResource wasn't properly defined in R3-R5
           sd = ctxt.fetchResource(StructureDefinition.class, "http://hl7.org/fhir/StructureDefinition/CodeSystem", IWorkerContext.VersionResolutionRules.defaultRule());
           pp = pp.replace("CanonicalResource", "CodeSystem");
-          p = pp.split("\\.");
+          @SuppressWarnings("checkstyle:stringImplicitPatternUsage")
+          //single literal character split
+          String[] pCanonical = pp.split("\\.");
+          p = pCanonical;
         }
         if (sd == null && url.equals("http://hl7.org/fhir/StructureDefinition/MetadataResource")) {
           // this is a hack for the fact that MetadataResource wasn't properly defined in R3-R5
           sd = ctxt.fetchResource(StructureDefinition.class, "http://hl7.org/fhir/StructureDefinition/PlanDefinition", IWorkerContext.VersionResolutionRules.defaultRule());
           pp = pp.replace("MetadataResource", "PlanDefinition");
-          p = pp.split("\\.");
+          @SuppressWarnings("checkstyle:stringImplicitPatternUsage")
+          //single literal character split
+          String[] pMetadata = pp.split("\\.");
+          p = pMetadata;
         }
         if (sd == null) {
           ok = false;
@@ -697,7 +705,7 @@ public class StructureDefinitionValidator extends BaseValidator {
           if (!td.isEmpty()) {
             List<IssueMessage> warnings = new ArrayList<IssueMessage>();
             try {
-              TypeDetails eval = fpe.checkOnTypes(this, "Resource", tn, td, fpe.parse(pathExp), warnings, true);
+              TypeDetails eval = fpe.checkOnTypes(null, "Resource", tn, td, fpe.parse(pathExp), warnings, true); // appInfo must be null (or a ValidationContext): there are no external constants in discriminator paths
               if (eval.isEmpty()) {
                 ok = rule(errors, "2024-11-06", IssueType.INVALID, dStack, false, I18nConstants.SD_PATH_NOT_VALID, pathExp, path) && ok;
               } 

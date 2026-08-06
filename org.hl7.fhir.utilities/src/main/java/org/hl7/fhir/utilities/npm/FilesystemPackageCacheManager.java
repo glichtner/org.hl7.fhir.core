@@ -565,6 +565,8 @@ public class FilesystemPackageCacheManager extends BasePackageCacheManager imple
           return currentPackageFolder;
         }
         if (version != null && !Utilities.existsInList(version, "current", "dev") && (VersionUtilities.isSemVerWithWildcards(version) || Utilities.charCount(version, '.') < 2) && currentPackageFolder.contains("#")) {
+          @SuppressWarnings("checkstyle:stringImplicitPatternUsage")
+          //single literal character split
           String[] parts = currentPackageFolder.split("#");
           if (parts[0].equals(id) && VersionUtilities.isSemVer(parts[1], true) && VersionUtilities.versionMatches((foundVersion != null ? foundVersion : version), parts[1])) {
             foundVersion = parts[1];
@@ -890,7 +892,8 @@ public class FilesystemPackageCacheManager extends BasePackageCacheManager imple
     if (url == null) {
       throw new FHIRException("Unable to resolve package id " + id);
     }
-    PackageList pl = PackageList.fromUrl(Utilities.pathURL(url, "package-list.json"));
+    String secureUrl = ManagedWebAccess.makeSecureRef(url);
+    PackageList pl = PackageList.fromUrl(Utilities.pathURL(secureUrl, "package-list.json"));
     if (!id.equals(pl.pid()))
       throw new FHIRException("Package ids do not match in " + pl.source() + ": " + id + " vs " + pl.pid());
     for (PackageListEntry vo : pl.versions()) {

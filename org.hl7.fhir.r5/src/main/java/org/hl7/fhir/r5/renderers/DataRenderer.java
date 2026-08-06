@@ -119,7 +119,7 @@ public class DataRenderer extends Renderer implements CodeResolver {
     addMarkdown(x, processRelativeUrls(text, path)); 
   } 
 
-  protected void addMarkdown(XhtmlNode x, String text) throws FHIRFormatError, IOException, DefinitionException { 
+  public void addMarkdown(XhtmlNode x, String text) throws FHIRFormatError, IOException, DefinitionException { 
     if (text != null) { 
       // 1. custom FHIR extensions 
       while (text.contains("[[[")) { 
@@ -128,7 +128,9 @@ public class DataRenderer extends Renderer implements CodeResolver {
         String right = text.substring(text.indexOf("]]]")+3); 
         String path = null; 
         String url = link; 
-        String[] parts = link.split("\\#"); 
+        @SuppressWarnings("checkstyle:stringImplicitPatternUsage")
+        //single literal character split
+        String[] parts = link.split("\\#");
         if (parts[0].contains(".")) { 
           path = parts[0]; 
           parts[0] = parts[0].substring(0, parts[0].indexOf(".")); 
@@ -197,7 +199,9 @@ public class DataRenderer extends Renderer implements CodeResolver {
 
   public static String describeVersion(String version) { 
     if (version.startsWith("http://snomed.info/sct")) { 
-      String[] p = version.split("\\/"); 
+      @SuppressWarnings("checkstyle:stringImplicitPatternUsage")
+      //single literal character split
+      String[] p = version.split("\\/");
       String ed = null; 
       String dt = ""; 
 
@@ -634,14 +638,15 @@ public class DataRenderer extends Renderer implements CodeResolver {
     case "Ratio":  return displayRatio(type);
     case "Reference" : return displayReference(type);
     case "Money" : return displayMoney(type);
+    case "base64Binary" : return displayBase64(type);
     case "dateTime":
-    case "date" : 
+    case "date" :
     case "instant" :
       return displayDateTime(type);
     default:
-      if (type.isPrimitive()) { 
-        return context.getTranslated(type); 
-      } else if (Utilities.existsInList(type.fhirType(),  "Meta", "Dosage", "Signature", "UsageContext", "RelatedArtifact", "ElementDefinition", "Base64BinaryType", "Attachment")) {
+      if (type.isPrimitive()) {
+        return context.getTranslated(type);
+      } else if (Utilities.existsInList(type.fhirType(),  "Meta", "Dosage", "Signature", "UsageContext", "RelatedArtifact", "ElementDefinition", "Attachment")) {
         return "";
       } else if ("Extension".equals(type.fhirType())) {
         return displayDataType(type.child("value"));
@@ -650,6 +655,17 @@ public class DataRenderer extends Renderer implements CodeResolver {
       }
     }
   } 
+
+  private String displayBase64(ResourceWrapper type) {
+    String b64 = type.primitiveValue();
+    if (b64 == null) {
+      return "";
+    } else if (b64.length() <= 32) {
+      return b64;
+    } else {
+      return b64.substring(0, 32)+"...";
+    }
+  }
 
   private String displayMoney(ResourceWrapper type) {
     String currency = type.primitiveValue("currency");
@@ -888,7 +904,8 @@ public class DataRenderer extends Renderer implements CodeResolver {
     case "base64Binary":
       int length = type.primitiveValue().length();
       if (length >= context.getBase64Limit()) {
-        x.tx(context.formatPhrase(RenderingContext.DATA_REND_BASE64, length));
+        x.code(displayBase64(type));
+        x.tx(" "+context.formatPhrase(RenderingContext.DATA_REND_BASE64, length));
       } else {
         x.code(type.primitiveValue());
       }
@@ -912,19 +929,36 @@ public class DataRenderer extends Renderer implements CodeResolver {
   }
 
   private void renderRatio(RenderingStatus status, XhtmlNode x, ResourceWrapper type) throws FHIRFormatError, DefinitionException, IOException {
-    renderQuantity(status, x, type.child("numerator"));
+    if (type.has("numerator")) {
+      renderQuantity(status, x, type.child("numerator"));
+    } else {
+      x.tx("?");
+    }
     x.tx("/");
-    renderQuantity(status, x, type.child("denominator"));      
+    if (type.has("denominator")) {
+      renderQuantity(status, x, type.child("denominator"));
+    } else {
+      x.tx("?");
+    }
     checkRenderExtensions(status, x, type);
   }
 
   private void renderAttachment(RenderingStatus status, XhtmlNode x, ResourceWrapper att) {
     String ct = att.primitiveValue("contentType");
     if (att.has("url")) {
-      x.tx(context.formatMessage(RenderingContext.DATA_REND_ATT_URL, ct, att.primitiveValue("url")));
+      String url = att.primitiveValue("url");
+      if (ct != null) {
+        x.tx(ct+" @ ");
+      }
+      XhtmlNode a = x.ah(url);
+      a.tx(url);
+      if (Utilities.isAbsoluteUrl(url)) {
+        a.tx(" ");
+        a.img("external.png", "icon").style("vertical-align: baseline");
+      }
     } else if (att.has("data")) {
-      x.tx(context.formatMessage(RenderingContext.DATA_REND_ATT_DATA, ct, displayDataType(att.child("data"))));      
-    }    
+      x.tx(context.formatMessage(RenderingContext.DATA_REND_ATT_DATA, ct, displayDataType(att.child("data"))));
+    }
   }
 
   private void renderContactDetail(RenderingStatus status, XhtmlNode x, ResourceWrapper cd) throws IOException {
@@ -1908,8 +1942,10 @@ public class DataRenderer extends Renderer implements CodeResolver {
 
     ResourceWrapper lowC = q.child("low");
     ResourceWrapper highC = q.child("high");
-    boolean sameUnits = (lowC != null && highC != null) && ((lowC.has("unit") && highC.has("unit") && lowC.child("unit").matches(highC.child("unit")))  
-        || (lowC.has("code") && highC.has("code") && lowC.child("code").matches(highC.child("code")))); 
+    @SuppressWarnings("checkstyle:stringImplicitPatternUsage")
+    //False positive: not using String.matches
+    boolean sameUnits = (lowC != null && highC != null) && ((lowC.has("unit") && highC.has("unit") && lowC.child("unit").matches(highC.child("unit")))
+        || (lowC.has("code") && highC.has("code") && lowC.child("code").matches(highC.child("code"))));
     String low = "?"; 
     if (q.has("low") && lowC.has("value")) 
       low = sameUnits ? lowC.primitiveValue("value").toString() : displayQuantity(lowC); 

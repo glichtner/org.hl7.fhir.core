@@ -154,12 +154,14 @@ public class I18nConstants {
   public static final String CONCEPTMAP_GROUP_SOURCE_CODE_INVALID = "CONCEPTMAP_GROUP_SOURCE_CODE_INVALID";
   public static final String CONCEPTMAP_GROUP_SOURCE_CODE_INVALID_VS = "CONCEPTMAP_GROUP_SOURCE_CODE_INVALID_VS";
   public static final String CONCEPTMAP_GROUP_SOURCE_DISPLAY_INVALID = "CONCEPTMAP_GROUP_SOURCE_DISPLAY_INVALID";
+  public static final String CONCEPTMAP_GROUP_SOURCE_CODE_CANT_CHECK = "CONCEPTMAP_GROUP_SOURCE_CODE_CANT_CHECK";
   public static final String CONCEPTMAP_GROUP_SOURCE_INCOMPLETE = "CONCEPTMAP_GROUP_SOURCE_INCOMPLETE";
   public static final String CONCEPTMAP_GROUP_SOURCE_MISSING = "CONCEPTMAP_GROUP_SOURCE_MISSING";
   public static final String CONCEPTMAP_GROUP_SOURCE_SERVER_SIDE = "CONCEPTMAP_GROUP_SOURCE_SERVER_SIDE";
   public static final String CONCEPTMAP_GROUP_SOURCE_UNKNOWN = "CONCEPTMAP_GROUP_SOURCE_UNKNOWN";
   public static final String CONCEPTMAP_GROUP_TARGET_CODE_INVALID = "CONCEPTMAP_GROUP_TARGET_CODE_INVALID";
   public static final String CONCEPTMAP_GROUP_TARGET_CODE_INVALID_VS = "CONCEPTMAP_GROUP_TARGET_CODE_INVALID_VS";
+  public static final String CONCEPTMAP_GROUP_TARGET_CODE_CANT_CHECK = "CONCEPTMAP_GROUP_TARGET_CODE_CANT_CHECK";
   public static final String CONCEPTMAP_GROUP_TARGET_DISPLAY_INVALID = "CONCEPTMAP_GROUP_TARGET_DISPLAY_INVALID";
   public static final String CONCEPTMAP_GROUP_TARGET_INCOMPLETE = "CONCEPTMAP_GROUP_TARGET_INCOMPLETE";
   public static final String CONCEPTMAP_GROUP_TARGET_MISSING = "CONCEPTMAP_GROUP_TARGET_MISSING";
@@ -410,7 +412,6 @@ public class I18nConstants {
   public static final String LIQUID_UNKNOWN_FLOW_STMT = "LIQUID_UNKNOWN_FLOW_STMT";
   public static final String LIQUID_UNKNOWN_NOEND = "LIQUID_UNKNOWN_NOEND";
   public static final String LIQUID_UNKNOWN_SYNTAX = "LIQUID_UNKNOWN_SYNTAX";
-  public static final String LIQUID_VARIABLE_ALREADY_ASSIGNED = "LIQUID_VARIABLE_ALREADY_ASSIGNED";
   public static final String LIQUID_VARIABLE_ILLEGAL = "LIQUID_VARIABLE_ILLEGAL";
   public static final String LOGICAL_MODEL_NAME_MISMATCH = "LOGICAL_MODEL_NAME_MISMATCH";
   public static final String LOGICAL_MODEL_QNAME_MISMATCH = "LOGICAL_MODEL_QNAME_MISMATCH";
@@ -530,8 +531,6 @@ public class I18nConstants {
   public static final String NO_URL_IN_EXPAND_VALUE_SET_2 = "no_url_in_expand_value_set_2";
   public static final String NO_VALIDATOR_CONFIGURED = "No_validator_configured";
   public static final String NO_VALID_DISPLAY_FOUND = "NO_VALID_DISPLAY_FOUND";
-  public static final String NO_VALID_DISPLAY_FOUND_LANG_NONE = "NO_VALID_DISPLAY_FOUND_LANG_NONE";
-  public static final String NO_VALID_DISPLAY_FOUND_LANG_SOME = "NO_VALID_DISPLAY_FOUND_LANG_SOME";
   public static final String NO_VALID_DISPLAY_FOUND_NONE_FOR_LANG_OK = "NO_VALID_DISPLAY_FOUND_NONE_FOR_LANG_OK";
   public static final String NO_VALID_DISPLAY_FOUND_NONE_FOR_LANG_ERR = "NO_VALID_DISPLAY_FOUND_NONE_FOR_LANG_ERR";
   public static final String NO_VALUE_SET_IN_URL = "no_value_set";
@@ -912,8 +911,6 @@ public class I18nConstants {
   public static final String THIS__CANNOT_BE_PARSED_AS_A_FHIR_OBJECT_NO_NAMESPACE = "This__cannot_be_parsed_as_a_FHIR_object_no_namespace";
   public static final String TX_GENERAL_CC_ERROR_MESSAGE = "TX_GENERAL_CC_ERROR_MESSAGE";
   public static final String TX_SERVER_NO_BATCH_RESPONSE = "TX_SERVER_NO_BATCH_RESPONSE";
-  public static final String TYPE_CHECKS_FIXED_CC = "TYPE_CHECKS_FIXED_CC";
-  public static final String TYPE_CHECKS_FIXED_CC_US = "TYPE_CHECKS_FIXED_CC_US";
   public static final String TYPE_CHECKS_PATTERN_CC = "TYPE_CHECKS_PATTERN_CC";
   public static final String TYPE_CHECKS_PATTERN_CC_US = "TYPE_CHECKS_PATTERN_CC_US"; 
   public static final String TYPE_ON_FIRST_DIFFERENTIAL_ELEMENT = "type_on_first_differential_element";
@@ -1085,7 +1082,6 @@ public class I18nConstants {
   public static final String UNKNOWN_CODE_IN = "Unknown_Code_in";
   public static final String UNKNOWN_CODE_IN_FRAGMENT = "UNKNOWN_CODE_IN_FRAGMENT";
   public static final String UNKNOWN_CODE_IN_VERSION = "Unknown_Code_in_Version";
-  public static final String UNKNOWN_CODE_IN_VERSION_SCT = "Unknown_Code_in_Version_SCT";
   public static final String UNKNOWN_DATA_FORMAT_ = "Unknown_Data_format_";
   public static final String UNKNOWN_DATE_FORMAT_ = "Unknown_Date_format_";
   public static final String UNKNOWN_PROPERTY = "UNKNOWN_PROPERTY";
@@ -1229,7 +1225,6 @@ public class I18nConstants {
   public static final String VALUESET_SHAREABLE_MISSING_HL7 = "VALUESET_SHAREABLE_MISSING_HL7";
   public static final String VALUESET_SUPPLEMENT_MISSING = "VALUESET_SUPPLEMENT_MISSING";
   public static final String VALUESET_TOO_COSTLY = "VALUESET_TOO_COSTLY";
-  public static final String VALUESET_TOO_COSTLY_COUNT = "VALUESET_TOO_COSTLY_COUNT";
   public static final String VALUESET_TOO_COSTLY_TIME = "VALUESET_TOO_COSTLY_TIME";
   public static final String VALUESET_UNC_SYSTEM_WARNING = "VALUESET_UNC_SYSTEM_WARNING";
   public static final String VALUESET_UNC_SYSTEM_WARNING_VER = "VALUESET_UNC_SYSTEM_WARNING_VER";
@@ -1450,6 +1445,7 @@ public class I18nConstants {
   public static final String TYPE_SPECIFIC_CHECKS_DT_SID_INCORRECT = "TYPE_SPECIFIC_CHECKS_DT_SID_INCORRECT";
   public static final String INACTIVE_DISPLAY_FOUND = "INACTIVE_DISPLAY_FOUND";
   public static final String INACTIVE_CONCEPT_FOUND = "INACTIVE_CONCEPT_FOUND";
+  public static final String INACTIVE_CONCEPT_FOUND_ADD = "INACTIVE_CONCEPT_FOUND_ADD";
   public static final String DEPRECATED_CONCEPT_FOUND = "DEPRECATED_CONCEPT_FOUND";
   public static final String CONCEPT_DEPRECATED_IN_VALUESET = "CONCEPT_DEPRECATED_IN_VALUESET";
   public static final String EXTENSION_EXT_VERSION_NOTALLOWED = "EXTENSION_EXT_VERSION_NOTALLOWED";
@@ -1503,4 +1499,14 @@ public class I18nConstants {
   public static final String TYPE_SPECIFIC_CHECKS_DT_QTY_GT_MIN = "TYPE_SPECIFIC_CHECKS_DT_QTY_GT_MIN";
   public static final String TYPE_SPECIFIC_CHECKS_DT_QTY_GT_MAX = "TYPE_SPECIFIC_CHECKS_DT_QTY_GT_MAX";
   public static final String REGEX_MATCH_TIMED_OUT = "REGEX_MATCH_TIMED_OUT";
+  public static final String LIQUID_STATEMENT_ERROR = "LIQUID_STATEMENT_ERROR";
+  public static final String LIQUID_BAD_DATE_FORMAT = "LIQUID_BAD_DATE_FORMAT";
+  public static final String LIQUID_FILTER_NOT_SUPPORTED = "LIQUID_FILTER_NOT_SUPPORTED";
+  public static final String LIQUID_UNABLE_TO_PARSE_DATETIME = "LIQUID_UNABLE_TO_PARSE_DATETIME";
+  public static final String LIQUID_INCLUDE_NOT_RESOLVED = "LIQUID_INCLUDE_NOT_RESOLVED";
+  public static final String LIQUID_INCLUDE_NOT_SUPPORTED = "LIQUID_INCLUDE_NOT_SUPPORTED";
+  public static final String LIQUID_NO_SOURCE_TO_PARSE = "LIQUID_NO_SOURCE_TO_PARSE";
+  public static final String JSON_PROPERTY_INVALID_ARRAY = "JSON_PROPERTY_INVALID_ARRAY";
+  public static final String FHIR_RESOURCE_ID_CANT_BE_EXTENDED = "FHIR_RESOURCE_ID_CANT_BE_EXTENDED";
+
 }
