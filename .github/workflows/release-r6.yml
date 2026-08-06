@@ -42,8 +42,11 @@ jobs:
 
       - name: Build core modules and validator CLI
         run: |
+          # -DskipTests (not -Dmaven.test.skip): org.hl7.fhir.validation.cli
+          # depends on the sibling modules' test-jars, which are only built
+          # when test compilation runs.
           mvn install -pl org.hl7.fhir.validation.cli -am \
-            -Dmaven.test.skip=true -Dmaven.javadoc.skip=true --no-transfer-progress
+            -DskipTests -Dmaven.javadoc.skip=true --no-transfer-progress
 
       - name: Read project version
         id: ver
