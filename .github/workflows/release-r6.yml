@@ -1,4 +1,9 @@
-name: Release ballot4 core jars
+name: Release R6 core jars
+
+# Builds the R5 core jars (with R6 ballot compatibility patches) plus the
+# validator CLI fat jar, and publishes them as a GitHub release tagged
+# r5-${R6_LABEL}-<timestamp>. The companion glichtner/fhir-ig-publisher
+# release workflow consumes the module jars.
 
 on:
   push:
@@ -10,17 +15,21 @@ on:
       - 'org.hl7.fhir.utilities/**'
       - 'org.hl7.fhir.convertors/**'
       - 'org.hl7.fhir.validation/**'
-      - '.github/workflows/release-ballot4.yml'
+      - 'org.hl7.fhir.validation.cli/**'
+      - '.github/workflows/release-r6.yml'
       - 'pom.xml'
   workflow_dispatch:
 
 permissions:
   contents: write
 
+env:
+  R6_LABEL: ballot5
+
 jobs:
   release:
     runs-on: ubuntu-latest
-    timeout-minutes: 30
+    timeout-minutes: 60
     steps:
       - uses: actions/checkout@v4
 
@@ -31,14 +40,10 @@ jobs:
           distribution: 'temurin'
           cache: 'maven'
 
-      - name: Build & install core modules used by IG Publisher
+      - name: Build core modules and validator CLI
         run: |
-          set -e
-          for m in org.hl7.fhir.utilities org.hl7.fhir.r4 org.hl7.fhir.r4b org.hl7.fhir.r5 org.hl7.fhir.convertors org.hl7.fhir.validation; do
-            echo "::group::Building $m"
-            mvn install -pl "$m" -am -Dmaven.test.skip=true -Dmaven.javadoc.skip=true --no-transfer-progress
-            echo "::endgroup::"
-          done
+          mvn install -pl org.hl7.fhir.validation.cli -am \
+            -Dmaven.test.skip=true -Dmaven.javadoc.skip=true --no-transfer-progress
 
       - name: Read project version
         id: ver
@@ -51,7 +56,7 @@ jobs:
         id: tag
         run: |
           STAMP=$(date -u +%Y%m%d-%H%M%S)
-          TAG="r5-ballot4-${STAMP}"
+          TAG="r5-${R6_LABEL}-${STAMP}"
           echo "tag=$TAG" >> $GITHUB_OUTPUT
           echo "stamp=$STAMP" >> $GITHUB_OUTPUT
           echo "Tag: $TAG"
@@ -62,43 +67,36 @@ jobs:
           for m in org.hl7.fhir.utilities org.hl7.fhir.r4 org.hl7.fhir.r4b org.hl7.fhir.r5 org.hl7.fhir.convertors org.hl7.fhir.validation; do
             cp "$m/target/$m-${{ steps.ver.outputs.version }}.jar" artifacts/
           done
+          cp "org.hl7.fhir.validation.cli/target/org.hl7.fhir.validation.cli-${{ steps.ver.outputs.version }}.jar" artifacts/validator_cli.jar
           ls -la artifacts/
 
       - name: Write release notes
         run: |
           cat > /tmp/notes.md <<EOF
-          # R5 core jars with R6 ballot4 compatibility patches
+          # R5 core jars with R6 ${{ env.R6_LABEL }} compatibility patches
 
           Built from \`${{ github.ref_name }}\` @ \`${{ github.sha }}\`
           Project version: \`${{ steps.ver.outputs.version }}\`
 
           ## What's in here
-          R5 core jars patched to parse and validate R6 ballot4 IGs (via the existing
-          \`R6ToR5Loader\` mechanism in upstream IG Publisher). See commit log for the
-          full list of ballot4 spec deltas handled.
+          - R5 core jars patched to parse and validate R6 ${{ env.R6_LABEL }} IGs (via the
+            existing \`R6ToR5Loader\` mechanism in upstream IG Publisher). See commit log
+            for the full list of ballot spec deltas handled.
+          - \`validator_cli.jar\` — the validator CLI fat jar built from the same sources
+            (use in place of the official validator for R6 ${{ env.R6_LABEL }} content).
 
           ## Consuming
-          Download the jars and install to a local Maven repo, then build any project
-          that depends on \`ca.uhn.hapi.fhir:org.hl7.fhir.*:${{ steps.ver.outputs.version }}\`:
-
-          \`\`\`bash
-          for j in *.jar; do
-            mvn install:install-file -Dfile="\$j" -DpomFile=... \\
-              -DgroupId=ca.uhn.hapi.fhir -DartifactId=\$(basename \$j .jar | sed 's/-${{ steps.ver.outputs.version }}//') \\
-              -Dversion=${{ steps.ver.outputs.version }} -Dpackaging=jar
-          done
-          \`\`\`
-
-          The companion \`glichtner/fhir-ig-publisher\` release builds the IG Publisher
-          CLI against these jars automatically.
+          The companion \`glichtner/fhir-ig-publisher\` release workflow downloads the
+          module jars, installs them as \`ca.uhn.hapi.fhir:org.hl7.fhir.*:${{ steps.ver.outputs.version }}\`
+          into the local Maven repo, and builds the IG Publisher CLI against them.
           EOF
 
       - name: Create release
         uses: softprops/action-gh-release@v2
         with:
           tag_name: ${{ steps.tag.outputs.tag }}
-          name: R5 core ballot4 ${{ steps.tag.outputs.stamp }}
+          name: R5 core ${{ env.R6_LABEL }} ${{ steps.tag.outputs.stamp }}
           body_path: /tmp/notes.md
-          files: artifacts/*.jar
+          files: artifacts/*
           draft: false
           prerelease: false
