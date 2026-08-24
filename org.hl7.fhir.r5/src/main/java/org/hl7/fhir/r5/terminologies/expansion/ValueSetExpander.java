@@ -106,7 +106,7 @@ import org.hl7.fhir.r5.terminologies.validation.VSCheckerException;
 import org.hl7.fhir.r5.terminologies.utilities.TerminologyServiceErrorClass;
 import org.hl7.fhir.r5.terminologies.utilities.ValueSetProcessBase;
 
-import org.hl7.fhir.r5.utils.UserDataNames;
+import org.hl7.fhir.utilities.UserDataNames;
 import org.hl7.fhir.r5.utils.client.EFhirClientException;
 import org.hl7.fhir.utilities.*;
 import org.hl7.fhir.utilities.i18n.AcceptLanguageHeader;
@@ -861,7 +861,7 @@ public class ValueSetExpander extends ValueSetProcessBase {
 
     try {
       if (source.hasCompose()) {
-        //        ExtensionsUtils.stripExtensions(focus.getCompose()); - disabled 23/05/2023 GDG - why was this ever thought to be a good idea?
+        //        ExtensionUtilities.stripExtensions(focus.getCompose()); - disabled 23/05/2023 GDG - why was this ever thought to be a good idea?
         handleCompose(source.getCompose(), focus.getExpansion(), expParams, source.getUrl(), focus.getExpansion().getExtension(), source);
       }
     } catch (EFinished e) {
@@ -1028,7 +1028,7 @@ public class ValueSetExpander extends ValueSetProcessBase {
 
     try {
       if (source.hasCompose()) {
-//        ExtensionsUtils.stripExtensions(focus.getCompose()); - disabled 23/05/2023 GDG - why was this ever thought to be a good idea?
+//        ExtensionUtilities.stripExtensions(focus.getCompose()); - disabled 23/05/2023 GDG - why was this ever thought to be a good idea?
         handleCompose(source.getCompose(), focus.getExpansion(), expParams, source.getUrl(), focus.getExpansion().getExtension(), source);
       }
     } catch (EFinished e) {
